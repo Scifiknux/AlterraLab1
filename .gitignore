@@ -1,1 +1,23 @@
+# macOS
 .DS_Store
+
+# ── BMAD tooling: generated/vendored — regenerate with the installer ──
+# Vendored framework modules + scripts (pulled from npm/GitHub, pinned in
+# _bmad/_config/manifest.yaml). Treated like node_modules: not committed.
+/_bmad/*
+!/_bmad/config.toml
+!/_bmad/custom/
+!/_bmad/_config/
+/_bmad/_config/*
+!/_bmad/_config/manifest.yaml
+# Personal install answers (user/machine specific)
+/_bmad/config.user.toml
+
+# Generated per-IDE skill/agent sets (claude-code, codex, cursor, copilot)
+/.claude/skills/
+/.agent/
+/.agents/
+/.github/agents/
+
+# Claude Code local settings (personal)
+/.claude/settings.local.json
