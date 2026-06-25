@@ -8,12 +8,18 @@ const { id } = Astro.params;
 const dogId = parseInt(id || '0');
 
 let dog = null;
+let imageUrl = '';
 let error: string | null = null;
 
 try {
   const response = await fetch(`${API_SERVER_URL}/api/dogs/${dogId}`);
   if (response.ok) {
     dog = await response.json();
+    const imgResponse = await fetch('https://dog.ceo/api/breeds/image/random');
+    if (imgResponse.ok) {
+      const imgData: { message: string } = await imgResponse.json();
+      imageUrl = imgData.message;
+    }
   } else if (response.status === 404) {
     error = 'Dog not found';
   } else {
@@ -31,7 +37,7 @@ try {
         {error}
       </div>
     ) : dog ? (
-      <DogDetails dog={dog} />
+      <DogDetails dog={dog} imageUrl={imageUrl} />
     ) : (
       <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl p-6">
         <p class="text-slate-400">No dog information available</p>

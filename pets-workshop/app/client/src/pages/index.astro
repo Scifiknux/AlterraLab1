@@ -5,7 +5,7 @@ import DogList from '../components/DogList.astro';
 const API_SERVER_URL = process.env.API_SERVER_URL || 'http://localhost:5100';
 const PAGE_SIZE = 6;
 
-let dogs = [];
+let dogs: { id: number; name: string; breed: string; imageUrl: string }[] = [];
 let page = 1;
 let totalPages = 1;
 let error: string | null = null;
@@ -16,9 +16,21 @@ try {
   const response = await fetch(`${API_SERVER_URL}/api/dogs?page=${currentPage}&per_page=${PAGE_SIZE}`);
   if (response.ok) {
     const data = await response.json();
-    dogs = data.dogs;
     page = data.page;
     totalPages = data.total_pages;
+
+    const imageUrls = await Promise.all(
+      data.dogs.map(() =>
+        fetch('https://dog.ceo/api/breeds/image/random')
+          .then(r => r.json())
+          .then((d: { message: string }) => d.message)
+          .catch(() => '')
+      )
+    );
+    dogs = data.dogs.map((dog: { id: number; name: string; breed: string }, i: number) => ({
+      ...dog,
+      imageUrl: imageUrls[i] ?? '',
+    }));
   } else {
     error = `Failed to fetch data: ${response.status} ${response.statusText}`;
   }
